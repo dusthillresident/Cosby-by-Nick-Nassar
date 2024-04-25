@@ -1,0 +1,171 @@
+Cosby is TI99/4a data cassette interface software modem
+Copyright (C) 2012 Nicholas Nassar
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+5houtout to my 1337 p33p zephyrz!!! 
+
+If you like this program, send me an email. My address is nicknassar
+at gee mail dot com.
+
+-----------
+DESCRIPTION
+-----------
+
+Once upon a time, in the early days of home computers, when disk drives
+were expensive, there were computers that could save data to audio
+cassettes. The TI99/4a was one of those computers. It was also
+fantastically unpopular.
+
+Cosby is a Linux program that will translate audio from the TI99/4a
+data cassette interface into binary files and "play" those binary
+files back. It's essentially a software modem.
+
+You'll need to construct a cable to connect this program to an actual
+TI99/4a.  Instructions on how to make that cable are below.
+
+Donations of hardware, money or beer might convince me to
+port the code to another old timey home computer.
+
+You can also use it to transfer files over any sort of audio
+connection.  It's very robust against noise, but the protocol is kind
+stupid and block based. There's no byte level framing, so it's not
+useful as a serial protocol. Donations might also convince me
+to write a version of this that uses the Kansas City Standard
+protocol as described in Byte magazine.
+
+I hope that the source code is useful as a practical example of signal
+processing and FM synthesis with the infamous Fast Fourier Transform.
+
+----------
+INSTALLING
+----------
+
+I provide RPM and .deb installers for i386 Linux.  They should work on
+just about any Linux system.
+https://github.com/nicknassar/cosby/downloads
+
+-------
+RUNNING
+-------
+
+Connect the cable to your computer.
+
+Cosby uses your default playback and recording devices, and it does
+not alter their volume settings. You need to do this yourself.  Using
+a tool like "alsamixer", set the ALSA playback device and recording
+device to the ports where your cable is plugged in, and turn the
+volume on both all the way up.
+
+Cosby is quite tolerant of weak, noisy, distoryed signals, but it's
+not magic.  It's possible for either the playback of the recording
+level to be too loud or too quiet. If you're having trouble, try using
+"audacity" or some other sound recording tool to look at the input.
+
+Once you have the cable set up, boot up the TI into BASIC,
+enter a short program, and type "SAVE CS1". When you're prompted
+to press RECORD, instead type
+
+  cosby press record tapedata.dat
+
+to start recording to a file. To load a BASIC program up type "OLD CS1"
+and when you're prompted to press PLAY type
+
+  cosby press play tapedata.dat
+
+That's all there is to it.
+
+--------
+BUILDING
+--------
+
+You only need to build from source if you're planning on modfying the
+source code or you have a non-intel machine.  The packages provided
+should work everywhere.
+
+Cosby is a single C file, so it should be very easy to compile.
+A Makefile that should work on most Linux systems is included.
+
+It requires that you have libsndfile libfftw3, and libasound2 (ALSA)
+installed.
+
+On Debian and Ubuntu, everything is available in the repository.
+$ sudo apt-get install build-essential libsndfile-dev libfftw3-dev libasound2-dev
+
+On Red Hat and CentOS, there are packages for everything necessary
+except libfftw3 and libsndfile.
+
+You can download the latest versions from
+http://www.fftw.org/ and http://www.mega-nerd.com/libsndfile/
+
+Once everything is ready, just run make
+
+ $ make
+
+That's it. If you need to change the compiler parameters, edit the
+Makefile.
+
+---------
+THE CABLE
+---------
+
+This is slightly dangerous. The motor controls have a high voltage.
+Don't do anything stupid.
+
+If you're looking at the port on the back of the computer,
+the pins are numbered like this.
+
+         -------------
+         \ 1 2 3 4 5 /
+          \ 6 7 8 9 /
+           --------
+
+The pins correspond to
+
+1 - Cassette 1 remote control - positive
+2 - Cassette 1 remote control - negative
+3 - Output to tape - positive
+4 - "Audio gate" - I think this goes to the audio output?
+5 - Output to tape - negative
+6 - Cassette 2 remote control - positive
+7 - Cassette 2 remote control - negative
+8 - Input from tape - positive
+9 - Input from tape - negative
+
+BE CAREFUL WITH THE REMOTE CONTROL PINS! THEY HAVE ENOUGH POWER TO
+CONTROL MOTORS. I MEASURED 60V DC!
+
+If you had two cassette decks, they would both be wired to the same input
+and output connection, and the computer would use the motor controls
+to turn the appropriate deck on or off.
+
+The input expects a signal at line-out levels, so any sound card
+should be fine.
+
+The output is at microphone signal strength. If you connect it
+to a line-in, you get a very weak signal. It works for me if I turn
+the volume all the way up. If you were doing it right, you'd
+find a machine with a microphone input or run it through some sort
+of amplifier.
+
+Find an old DB9 serial cable and a couple 1/8in headphone jacks.
+Wire the positive pins of the audio inputs and outputs to the tips
+of the jacks, and wire the negative pins to the ring.
+
+Cosby doesn't use stereo. It only listens on the left channel. It is
+deaf in its right ear.
+
+
+
+HAVE FUN!
